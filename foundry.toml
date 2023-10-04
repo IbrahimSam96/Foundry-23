@@ -4,4 +4,6 @@ out = "out"
 libs = ["lib"]
 remappings = ['@chainlink/contracts/=lib/chainlink-brownie-contracts/contracts/']
 
+# Allows Foundry to run commands on your machine. Used to pull up latest contract deployment. 
+ffi=true
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
