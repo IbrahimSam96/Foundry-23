@@ -8,7 +8,6 @@ import {FundMe} from "../src/FundMe.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployFundMe is Script {
-
     function run() external returns (FundMe) {
         //Before start broadcoast -> not a real tx
         HelperConfig helperConfig = new HelperConfig();
@@ -21,6 +20,4 @@ contract DeployFundMe is Script {
 
         return fundMe;
     }
-
-    
 }

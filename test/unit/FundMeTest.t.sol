@@ -8,8 +8,6 @@ import {FundMe} from "../../src/FundMe.sol";
 
 import {DeployFundMe} from "../../script/DeployFundMe.s.sol";
 
-
-
 contract FundMeTest is Test {
     FundMe fundMe;
 
@@ -52,19 +50,15 @@ contract FundMeTest is Test {
         assertEq(fundedAmount, 5e18);
     }
 
-    function testFunderAdded() public {
-        vm.prank(User); // The next TX will be sent by USER
-
-        fundMe.fund{value: 5e18}();
-
-        address funders = fundMe.getFunders(0);
-        assertEq(funders, User);
-    }
-
     modifier fundedByUser() {
         vm.prank(User); // The next TX will be sent by USER
         fundMe.fund{value: 5e18}();
         _;
+    }
+
+    function testUserFunderAdded() public fundedByUser {
+        address funders = fundMe.getFunders(0);
+        assertEq(funders, User);
     }
 
     function testOnlyOwnerWithdraw() public fundedByUser {

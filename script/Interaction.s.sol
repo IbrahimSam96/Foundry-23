@@ -8,22 +8,34 @@ import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
 import {FundMe} from "../src/FundMe.sol";
 
 contract FundFundMe is Script {
+    uint256 private constant SEND_VALUE = 0.1 ether;
 
+    function fundFundMe(address fundMeAddress) public {
+        vm.startBroadcast();
 
-    function FundLatestFundMe(address fundMeAddress) public {
-        FundMe(payable(fundMeAddress)).fund{value: 5e18}();
-        console.log("Funded -> FundMe");
+        FundMe(payable(fundMeAddress)).fund{value: SEND_VALUE}();
+
+        vm.stopBroadcast();
+        console.log("Funded FundMe with %s", SEND_VALUE);
+        console.log("Contract Address", fundMeAddress);
     }
 
     function run() external {
-        address mostRecentDeployedFundMe = DevOpsTools
-            .get_most_recent_deployment("FundMe", block.chainid);
-        vm.startBroadcast();
-
-        FundLatestFundMe(mostRecentDeployedFundMe);
-        vm.stopBroadcast();
+        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment("FundMe", block.chainid);
+        fundFundMe(mostRecentlyDeployed);
     }
 }
 
-contract WithdrawFundMe is Script {}
+contract WithdrawFundMe is Script {
+    function withdrawFundMe(address mostRecentlyDeployed) public {
+        vm.startBroadcast();
+        FundMe(payable(mostRecentlyDeployed)).withdraw();
+        vm.stopBroadcast();
+        console.log("Withdraw FundMe balance!");
+    }
 
+    function run() external {
+        address mostRecentlyDeployed = DevOpsTools.get_most_recent_deployment("FundMe", block.chainid);
+        withdrawFundMe(mostRecentlyDeployed);
+    }
+}
